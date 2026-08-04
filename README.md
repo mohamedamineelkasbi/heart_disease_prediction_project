@@ -10,33 +10,48 @@ Plusieurs modèles de Machine Learning ont été entraînés et comparés. Une i
 ## 📁 Structure du projet
 
 heart_disease_prediction_project/
-│
-├── app/ # 🖥️ Interface utilisateur (Streamlit)
-│ └── app.py # Code principal de l'application
-│
-├── data/ # 📊 Données
-│ ├── raw/ # Données brutes (non modifiées)
-│ │ └── heart.csv # Dataset Kaggle (918 patients)
-│ └── processed/ # Données après transformation
-│ └── heart_clean.csv # Données imputées et encodées
-│
-├── models/ # 🤖 Modèles entraînés
-│ ├── lr_final.pkl # Régression Logistique
-│ ├── svm_final.pkl # Support Vector Machine
-│ ├── best_rf.pkl # Random Forest
-│ ├── best_xgb.pkl # XGBoost 
-│ └── scaler.pkl # StandardScaler pour la normalisation
-│
-├── notebooks/ # 📓 Notebooks Jupyter
-│ └── DATA_MODELING.ipynb # Pipeline complet (EDA → Modélisation)
-│
-├── reports/ # 📈 Visualisations et figures
-│ └── (graphiques générés)
-│
-├── .gitignore # 🙈 Fichiers exclus du versionnement
-├── requirements.txt # 📦 Dépendances Python
-├── README.md # 📝 Documentation
-└── start.bat # 🚀 Script de lancement
+
+├── app/
+
+│ └── app.py
+
+├── data/
+
+│ ├── raw/
+
+│ │ └── heart.csv
+
+│ └── processed/
+
+│ └── heart_clean.csv
+
+├── models/
+
+│ ├── lr_final.pkl
+
+│ ├── svm_final.pkl
+
+│ ├── best_rf.pkl
+
+│ ├── best_xgb.pkl
+
+│ └── scaler.pkl
+
+├── notebooks/
+
+│ ├── DATA_MODELING.ipynb
+
+│ ├── Data_PREPROCESSING.ipynb
+
+│ └── DATA_VISUALISATION.ipynb
+
+├── figures/
+
+├── .gitignore
+
+├── requirements.txt
+
+└── README.md
 
 ## 📊 Données
 - **Source** : [Heart Failure Prediction Dataset (Kaggle)](https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction)
