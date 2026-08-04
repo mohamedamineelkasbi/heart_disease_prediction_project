@@ -76,7 +76,7 @@ heart_disease_prediction_project/
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/ton-utilisateur/heart_disease_prediction_project.git
+git clone https://github.com/mohamedamineelkasbi/heart_disease_prediction_project.git
 cd heart_disease_prediction_project
 
 # 2. Créer un environnement virtuel (recommandé)
