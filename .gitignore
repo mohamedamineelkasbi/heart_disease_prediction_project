@@ -1,0 +1,29 @@
+# Environnement virtuel (LE PLUS IMPORTANT)
+.venv/
+venv/
+env/
+
+# Fichiers Python temporaires
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Notebooks (fichiers de checkpoint)
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Fichiers de logs et données sensibles
+*.log
+*.env
+*.pkl  # Optionnel : si tu veux re-entraîner les modèles, mets-le. Mais si tu les sauvegardes, ne l'ajoute pas !
+
+# Dossiers d'IDE
+.vscode/
+.idea/
+*.swp
+
+# Fichiers système
+.DS_Store
+Thumbs.db
