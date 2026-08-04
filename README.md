@@ -60,17 +60,18 @@ heart_disease_prediction_project/
 
 ## 🧠 Modèles testés
 - Régression Logistique
-- Support Vector Machine (SVM)
+- Decision Tree
 - Random Forest
 - XGBoost
 
 ### 🏆 Performances (Recall)
-| Modèle | Recall (seuil 0.5) |
+| Modèle | Recall |
 |--------|-------------------|
-| **XGBoost** (Meilleur) | **~0.88** |
-| Régression Logistique | ~0.87 |
-| Random Forest | ~0.81 |
-| SVM | ~0.84 |
+| **XGBoost** | **~0.86** |
+| **Decision Tree** | **~0.85** |
+| **Random Forest** |**~0.83** |
+| **Régression Logistique** | **~0.83** |
+
 
 ## 🛠️ Installation et Lancement
 
