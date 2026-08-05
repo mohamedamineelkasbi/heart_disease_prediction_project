@@ -92,7 +92,8 @@ pip install -r requirements.txt
 streamlit run app/app.py
 
 
-🔗 Accéder à l'application directement
+## 🔗 Accéder à l'application directement
 
 **Aucune installation n'est requise !** L'application est hébergée sur Streamlit Cloud et est accessible en un clic via le lien ci-dessous :
-https://heartdiseasepredictionproject.streamlit.app/
+
+👉 **[Accéder à l'application en ligne](https://heartdiseasepredictionproject.streamlit.app/)** 
