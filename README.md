@@ -10,33 +10,48 @@ Plusieurs modèles de Machine Learning ont été entraînés et comparés. Une i
 ## 📁 Structure du projet
 
 heart_disease_prediction_project/
-│
-├── app/ # 🖥️ Interface utilisateur (Streamlit)
-│ └── app.py # Code principal de l'application
-│
-├── data/ # 📊 Données
-│ ├── raw/ # Données brutes (non modifiées)
-│ │ └── heart.csv # Dataset Kaggle (918 patients)
-│ └── processed/ # Données après transformation
-│ └── heart_clean.csv # Données imputées et encodées
-│
-├── models/ # 🤖 Modèles entraînés
-│ ├── lr_final.pkl # Régression Logistique
-│ ├── svm_final.pkl # Support Vector Machine
-│ ├── best_rf.pkl # Random Forest
-│ ├── best_xgb.pkl # XGBoost 
-│ └── scaler.pkl # StandardScaler pour la normalisation
-│
-├── notebooks/ # 📓 Notebooks Jupyter
-│ └── DATA_MODELING.ipynb # Pipeline complet (EDA → Modélisation)
-│
-├── reports/ # 📈 Visualisations et figures
-│ └── (graphiques générés)
-│
-├── .gitignore # 🙈 Fichiers exclus du versionnement
-├── requirements.txt # 📦 Dépendances Python
-├── README.md # 📝 Documentation
-└── start.bat # 🚀 Script de lancement
+
+├── app/
+
+│ └── app.py
+
+├── data/
+
+│ ├── raw/
+
+│ │ └── heart.csv
+
+│ └── processed/
+
+│ └── heart_clean.csv
+
+├── models/
+
+│ ├── lr_final.pkl
+
+│ ├── svm_final.pkl
+
+│ ├── best_rf.pkl
+
+│ ├── best_xgb.pkl
+
+│ └── scaler.pkl
+
+├── notebooks/
+
+│ ├── DATA_MODELING.ipynb
+
+│ ├── Data_PREPROCESSING.ipynb
+
+│ └── DATA_VISUALISATION.ipynb
+
+├── figures/
+
+├── .gitignore
+
+├── requirements.txt
+
+└── README.md
 
 ## 📊 Données
 - **Source** : [Heart Failure Prediction Dataset (Kaggle)](https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction)
@@ -45,23 +60,24 @@ heart_disease_prediction_project/
 
 ## 🧠 Modèles testés
 - Régression Logistique
-- Support Vector Machine (SVM)
+- Decision Tree
 - Random Forest
 - XGBoost
 
 ### 🏆 Performances (Recall)
-| Modèle | Recall (seuil 0.5) |
+| Modèle | Recall |
 |--------|-------------------|
-| **XGBoost** (Meilleur) | **~0.88** |
-| Régression Logistique | ~0.87 |
-| Random Forest | ~0.81 |
-| SVM | ~0.84 |
+| **XGBoost** | **~0.86** |
+| **Decision Tree** | **~0.85** |
+| **Random Forest** |**~0.83** |
+| **Régression Logistique** | **~0.83** |
+
 
 ## 🛠️ Installation et Lancement
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/ton-utilisateur/heart_disease_prediction_project.git
+git clone https://github.com/mohamedamineelkasbi/heart_disease_prediction_project.git
 cd heart_disease_prediction_project
 
 # 2. Créer un environnement virtuel (recommandé)
