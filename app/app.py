@@ -5,30 +5,24 @@ import pandas as pd
 st.set_page_config(page_title="Prédiction Maladie Cardiaque", page_icon="❤️", layout="wide")
 st.title("❤️ Prédicteur de Maladie Cardiaque")
 
-# -------------------------------------------------
-# CHARGEMENT DES MODÈLES ET DU SCALER
-# -------------------------------------------------
 @st.cache_resource
 def charger_modeles():
     modeles = {
         "Régression Logistique": joblib.load("../models/lr_final.pkl"),
+        "Arbre de décision": joblib.load("../models/best_dt.pkl")
         "Forêt Aléatoire": joblib.load("../models/best_rf.pkl"),
-        "XGBoost": joblib.load("../models/best_xgb.pkl"),
-        "SVM": joblib.load("../models/svm_final.pkl")
+        "XGBoost": joblib.load("../models/best_xgb.pkl")
     }
     scaler = joblib.load("../models/scaler.pkl")
     return modeles, scaler
 
 modeles, scaler = charger_modeles()
 
-# Colonnes à standardiser
 numerical_cols = ['Age', 'RestingBP', 'Cholesterol', 'MaxHR', 'Oldpeak']
 
 tab1, tab2, tab3 = st.tabs(["Prédiction", "Prédiction en masse", "Informations Modèles"])
 
-# -------------------------------------------------
-# ONGLET 1 : PRÉDICTION INDIVIDUELLE
-# -------------------------------------------------
+
 with tab1:
     st.sidebar.header("Paramètres du Patient")
 
@@ -76,10 +70,8 @@ with tab1:
             'ST_Slope_Up': [1 if ST_Slope == "Ascendante (Up)" else 0]
         })
 
-        # --- STANDARDISATION ---
         donnees_patient[numerical_cols] = scaler.transform(donnees_patient[numerical_cols])
 
-        # --- PRÉDICTION UNIQUEMENT AVEC predict (pas de proba, pas de seuil) ---
         st.subheader("🔍 Résultats des prédictions")
 
         for nom_modele, modele in modeles.items():
@@ -92,9 +84,6 @@ with tab1:
     else:
         st.info("📌 Remplissez vos informations médicales à gauche et cliquez sur le bouton.")
 
-# -------------------------------------------------
-# ONGLET 2 : PRÉDICTION EN MASSE
-# -------------------------------------------------
 with tab2:
     st.header("Importer un fichier CSV brut")
     st.write("Veuillez importer votre fichier contenant les données des patients pour obtenir une prédiction automatique.")
@@ -145,10 +134,8 @@ with tab2:
                 df_encode['ST_Slope_Flat'] = (df_brut['ST_Slope'] == 'Flat').astype(int)
                 df_encode['ST_Slope_Up'] = (df_brut['ST_Slope'] == 'Up').astype(int)
 
-            # --- STANDARDISATION ---
             df_encode[numerical_cols] = scaler.transform(df_encode[numerical_cols])
 
-            # --- PRÉDICTION AVEC predict (pas de proba) ---
             modele = modeles[modele_choisi]
             predictions = modele.predict(df_encode)
             
@@ -165,17 +152,14 @@ with tab2:
                 file_name='predictions.csv',
                 mime='text/csv'
             )
-
-# -------------------------------------------------
-# ONGLET 3 : INFORMATIONS MODÈLES
-# -------------------------------------------------
+            
 with tab3:
     st.header("Informations sur les Modèles")
-    st.subheader("Comparaison des performances (Accuracy)")
+    st.subheader("Comparaison des performances (Recall)")
 
     donnees_graphique = pd.DataFrame({
-        'Modèle': ['Régression Logistique', 'SVM', 'Forêt Aléatoire', 'XGBoost'],
-        'Accuracy': [0.87, 0.84, 0.81, 0.85]
+        'Modèle': ['Régression Logistique', 'Forêt Aléatoire', 'Arbre de décision', 'XGBoost'],
+        'Accuracy': [0.83, 0.83, 0.85, 0.86]
     })
 
-    st.bar_chart(donnees_graphique, x='Modèle', y='Accuracy', height=400)
+    st.bar_chart(donnees_graphique, x='Modèle', y='Recall', height=400)
