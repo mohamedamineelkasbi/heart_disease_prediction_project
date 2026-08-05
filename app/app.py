@@ -9,7 +9,7 @@ st.title("❤️ Prédicteur de Maladie Cardiaque")
 def charger_modeles():
     modeles = {
         "Régression Logistique": joblib.load("../models/lr_final.pkl"),
-        "Arbre de décision": joblib.load("../models/best_dt.pkl")
+        "Arbre de décision": joblib.load("../models/best_dt.pkl"),
         "Forêt Aléatoire": joblib.load("../models/best_rf.pkl"),
         "XGBoost": joblib.load("../models/best_xgb.pkl")
     }
