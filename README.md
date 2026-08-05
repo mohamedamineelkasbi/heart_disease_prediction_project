@@ -72,27 +72,6 @@ heart_disease_prediction_project/
 | **Random Forest** |**~0.83** |
 | **Régression Logistique** | **~0.83** |
 
+## 🔗 Tester l'application directement
 
-## 🛠️ Installation et Lancement
-
-```bash
-# 1. Cloner le dépôt
-git clone https://github.com/mohamedamineelkasbi/heart_disease_prediction_project.git
-cd heart_disease_prediction_project
-
-# 2. Créer un environnement virtuel (recommandé)
-python -m venv .venv
-# .venv\Scripts\activate   (Windows)
-# source .venv/bin/activate (Mac/Linux)
-
-# 3. Installer les dépendances
-pip install -r requirements.txt
-
-# 4. Lancer l'application
-streamlit run app/app.py
-
-
-## 🔗 Accéder à l'application directement
-
-**Aucune installation n'est requise !** L'application est hébergée sur Streamlit Cloud et est accessible en un clic via le lien ci-dessous :
-👉 **<a href="https://heartdiseasepredictionproject.streamlit.app/" target="_blank">Accéder à l'application en ligne</a>**
+👉 **[Cliquez ici pour accéder à l'application en ligne](https://heartdiseasepredictionproject.streamlit.app/)**
