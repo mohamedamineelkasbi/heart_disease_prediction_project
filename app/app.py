@@ -180,11 +180,11 @@ with tab2:
             
 with tab3:
     st.header("Informations sur les Modèles")
-    st.subheader("Comparaison des performances (Recall)")
+    st.subheader("Comparaison des performances (recall)")
 
     donnees_graphique = pd.DataFrame({
         'Modèle': ['Régression Logistique', 'Forêt Aléatoire', 'Arbre de décision', 'XGBoost'],
         'Accuracy': [0.83, 0.83, 0.85, 0.86]
     })
 
-    st.bar_chart(donnees_graphique, x='Modèle', y='Recall', height=400)
+    st.bar_chart(donnees_graphique, x='Modèle', y='recall', height=400)
