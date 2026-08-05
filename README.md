@@ -58,19 +58,44 @@ heart_disease_prediction_project/
 - **Volume** : 918 patients, 12 colonnes
 - **Cible** : `HeartDisease` (1 = Malade, 0 = Sain)
 
+| Variable | Signification |
+| :--- | :--- |
+| `Age` | Âge du patient (en années) |
+| `Sex` | Sexe (M = Homme, F = Femme) |
+| `ChestPainType` | Type de douleur thoracique (TA: Angine typique, ATA: Angine atypique, NAP: Douleur non angineuse, ASY: Asymptomatique) |
+| `RestingBP` | Pression artérielle au repos (en mm Hg) |
+| `Cholesterol` | Taux de cholestérol sérique (en mg/dl) |
+| `FastingBS` | Glycémie à jeun (> 120 mg/dl => 1, sinon 0) |
+| `RestingECG` | Résultats électrocardiographiques au repos (Normal, ST, LVH) |
+| `MaxHR` | Fréquence cardiaque maximale atteinte |
+| `ExerciseAngina` | Angine de poitrine induite par l'effort (Y = Oui, N = Non) |
+| `Oldpeak` | Dépression du segment ST par rapport au repos |
+| `ST_Slope` | Pente du segment ST lors de l'effort (Up, Flat, Down) |
+
 ## 🧠 Modèles testés
 - Régression Logistique
 - Decision Tree
 - Random Forest
 - XGBoost
 
+  ## ⚙️ Méthodologie suivie
+
+| Phase | Contenu |
+| :--- | :--- |
+| **compréhension du problème** | Problème de prédiction des maladies cardiaques, analyse du dataset de 918 patients, objectif de classification binaire (0 = Sain, 1 = Malade). |
+| **compréhension de données** | Analyse exploratoire (EDA) des 11 variables cliniques, étude des distributions, corrélations et valeurs manquantes. |
+| **Preparation de données** | Encodage des variables catégorielles (One-Hot Encoding), division des données en ensembles d'entraînement et de test avec stratification, normalisation des données numériques via `StandardScaler`. |
+| **entrainement du modèle** | Entraînement et optimisation de 4 modèles : Régression Logistique, Arbre de Décision, Random Forest et XGBoost. Utilisation de GridSearchCV pour trouver les meilleurs hyperparamètres. |
+| **Evaluation** | Évaluation des modèles via la Matrice de Confusion, l'Accuracy et le Recall (Rappel) et Comparaison des performances. |
+| **Deployment** | Déploiement de l'application interactive sur Streamlit Cloud, accessible directement en ligne pour tester les prédictions en temps réel. |
+
 ### 🏆 Performances (Recall)
-| Modèle | Recall |
-|--------|-------------------|
-| **XGBoost** | **~0.86** |
-| **Decision Tree** | **~0.85** |
-| **Random Forest** |**~0.83** |
-| **Régression Logistique** | **~0.83** |
+| Modèle | Accuracy | Recall |
+| :--- | :---: | :---: |
+| **Régression Logistique** | 0.8424 | 0.8333 |
+| **Arbre de Décision** | 0.8207 | 0.8529 |
+| **Random Forest** | 0.8152 | 0.8333 |
+| **XGBoost** | 0.8152 | 0.8627 |
 
 ## 🔗 Tester l'application directement
 
