@@ -94,5 +94,5 @@ streamlit run app/app.py
 
 ## 🔗 Accéder à l'application directement
 
-Aucune installation n'est requise ! L application est hébergée sur Streamlit Cloud et est accessible en un clic via le lien ci-dessous :
-[interface](https://heartdiseasepredictionproject.streamlit.app/)
+**Aucune installation n'est requise !** L'application est hébergée sur Streamlit Cloud et est accessible en un clic via le lien ci-dessous :
+👉 **<a href="https://heartdiseasepredictionproject.streamlit.app/" target="_blank">Accéder à l'application en ligne</a>**
