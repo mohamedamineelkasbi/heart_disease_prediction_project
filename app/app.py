@@ -1,20 +1,45 @@
 import streamlit as st
 import joblib
 import pandas as pd
+import os
 
 st.set_page_config(page_title="Prédiction Maladie Cardiaque", page_icon="❤️", layout="wide")
 st.title("❤️ Prédicteur de Maladie Cardiaque")
 
+
 @st.cache_resource
 def charger_modeles():
-    modeles = {
-        "Régression Logistique": joblib.load("../models/lr_final.pkl"),
-        "Arbre de décision": joblib.load("../models/best_dt.pkl"),
-        "Forêt Aléatoire": joblib.load("../models/best_rf.pkl"),
-        "XGBoost": joblib.load("../models/best_xgb.pkl")
-    }
-    scaler = joblib.load("../models/scaler.pkl")
-    return modeles, scaler
+
+    dossier_app = os.path.dirname(os.path.abspath(__file__))
+    
+    racine_projet = os.path.dirname(dossier_app)
+
+    scaler_path = os.path.join(racine_projet, "models", "scaler.pkl")
+    model_dt_path = os.path.join(racine_projet, "models", "best_dt.pkl")
+    model_rf_path = os.path.join(racine_projet, "models", "best_rf.pkl")
+    model_xgb_path = os.path.join(racine_projet, "models", "best_xgb.pkl")
+    model_lr_path = os.path.join(racine_projet, "models", "lr_final.pkl")
+
+    try:
+        
+        scaler = joblib.load(scaler_path)
+        model_dt = joblib.load(model_dt_path)
+        model_rf = joblib.load(model_rf_path)
+        model_xgb = joblib.load(model_xgb_path)
+        model_lr = joblib.load(model_lr_path)
+
+        modeles = {
+            "Decision Tree": model_dt,  
+            " Random Forest": model_rf,
+            "XGBoost": model_xgb, 
+            " Régression Logistique": model_lr   
+        }
+
+        return modeles, scaler
+
+    except FileNotFoundError as e:
+        st.error(f"❌ Erreur de chargement des modèles : {e}. Vérifiez que les fichiers .pkl sont bien présents dans le dossier 'models' à la racine.")
+        return None, None
 
 modeles, scaler = charger_modeles()
 
