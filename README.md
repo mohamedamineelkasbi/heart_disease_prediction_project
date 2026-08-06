@@ -29,7 +29,7 @@ heart_disease_prediction_project/
 
 │ ├── lr_final.pkl
 
-│ ├── svm_final.pkl
+│ ├── best_dt.pkl
 
 │ ├── best_rf.pkl
 
@@ -74,7 +74,7 @@ heart_disease_prediction_project/
 
 ## 🧠 Modèles testés
 - Régression Logistique
-- Decision Tree
+- SVM
 - Random Forest
 - XGBoost
 
@@ -93,7 +93,7 @@ heart_disease_prediction_project/
 | Modèle | Accuracy | Recall |
 | :--- | :---: | :---: |
 | **Régression Logistique** | 0.8424 | 0.8333 |
-| **Arbre de Décision** | 0.8207 | 0.8529 |
+| **Decision Tree** | 0.8207 | 0.8529 |
 | **Random Forest** | 0.8152 | 0.8333 |
 | **XGBoost** | 0.8152 | 0.8627 |
 
