@@ -74,7 +74,7 @@ heart_disease_prediction_project/
 
 ## 🧠 Modèles testés
 - Régression Logistique
-- SVM
+- Decision Tree
 - Random Forest
 - XGBoost
 
