@@ -324,11 +324,9 @@ with tab2:
 
             predictions = modele.predict(df_encode)
 
-            df_resultats = pd.read_csv(fichier_csv)
+            df_resultats = df_brut.copy()
 
-            df_resultats[
-                'Prédiction (0=Sain, 1=Malade)'
-            ] = predictions
+            df_resultats[ 'Prédiction (0=Sain, 1=Malade)'] = predictions
 
             st.success(
                 "✅ Fichier validé ! Prédiction terminée."
