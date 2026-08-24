@@ -90,8 +90,8 @@ heart_disease_prediction_project/
 | :--- | :--- |
 | **compréhension du problème** | Problème de prédiction des maladies cardiaques, analyse du dataset de 918 patients, objectif de classification binaire (0 = Sain, 1 = Malade). |
 | **compréhension de données** | Analyse exploratoire (EDA) des 11 variables cliniques, étude des distributions, corrélations et valeurs manquantes (imputation des valeurs manquantes par algorithme de KNN) |
-| **Preparation de données** | Encodage des variables catégorielles (One-Hot Encoding), division des données en ensembles d'entraînement et de test avec stratification, normalisation des données numériques via `StandardScaler`. |
-| **entrainement du modèle** | Entraînement et optimisation de 4 modèles : Régression Logistique, Arbre de Décision, Random Forest et XGBoost. Utilisation de GridSearchCV pour trouver les meilleurs hyperparamètres. |
+| **Preparation de données** | division des données en ensembles d'entraînement et de test avec stratification, normalisation des données numériques via `StandardScaler`et Encodage des variables catégorielles (One-Hot Encoding). |
+| **entrainement du modèle** | Entraînement et optimisation de 4 modèles : Régression Logistique, SVM, Random Forest et XGBoost. Utilisation de GridSearchCV pour trouver les meilleurs hyperparamètres. |
 | **Evaluation** | Évaluation des modèles via la Matrice de Confusion, l'Accuracy et le Recall (Rappel) et Comparaison des performances. |
 | **Deployment** | Déploiement de l'application interactive sur Streamlit Cloud, accessible directement en ligne pour tester les prédictions en temps réel. |
 
