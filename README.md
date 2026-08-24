@@ -98,10 +98,10 @@ heart_disease_prediction_project/
 ### 🏆 Performances (Recall)
 | Modèle | Accuracy | Recall |
 | :--- | :---: | :---: |
-| **Régression Logistique** | 0.8424 | 0.87 |
-| **SVM** | 0.8207 | 0.89 |
-| **Random Forest** | 0.8152 | 0.85 |
-| **XGBoost** | 0.8152 | 0.86 |
+| **Régression Logistique** | 0.87 | 0.87 |
+| **SVM** | 0.85 | 0.89 |
+| **Random Forest** | 0.85 | 0.85 |
+| **XGBoost** | 0.82 | 0.86 |
 
 ## 🔗 Tester l'application directement
 
