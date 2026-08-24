@@ -21,21 +21,18 @@ heart_disease_prediction_project/
 
 │ │ └── heart.csv
 
-│ └── processed/
+│ └── processed/                    # Données après prétraitement
+│    ├── X_train_final.csv          # Train : imputé , encodé et standardisé
+│    ├── X_test_final.csv           # Test : imputé , encodé et standardisé
+│    ├── y_train.csv                # Cible du train
+│    └── y_test.csv                 # Cible du test
 
-│ └── heart_clean.csv
-
-├── models/
-
-│ ├── lr_final.pkl
-
-│ ├── best_dt.pkl
-
-│ ├── best_rf.pkl
-
-│ ├── best_xgb.pkl
-
-│ └── scaler.pkl
+├── models/ # 🤖 Modèles entraînés
+│ ├── lr_final.pkl # Régression Logistique
+│ ├── svm_final.pkl # Support Vector Machine
+│ ├── best_rf.pkl # Random Forest (optimisé)
+│ ├── best_xgb.pkl # XGBoost (optimisé)
+│ └── scaler.pkl # StandardScaler pour la normalisation
 
 ├── notebooks/
 
@@ -74,7 +71,7 @@ heart_disease_prediction_project/
 
 ## 🧠 Modèles testés
 - Régression Logistique
-- Decision Tree
+- SVM
 - Random Forest
 - XGBoost
 
@@ -92,10 +89,10 @@ heart_disease_prediction_project/
 ### 🏆 Performances (Recall)
 | Modèle | Accuracy | Recall |
 | :--- | :---: | :---: |
-| **Régression Logistique** | 0.8424 | 0.8333 |
-| **Decision Tree** | 0.8207 | 0.8529 |
-| **Random Forest** | 0.8152 | 0.8333 |
-| **XGBoost** | 0.8152 | 0.8627 |
+| **Régression Logistique** | 0.8424 | 0.87 |
+| **SVM** | 0.8207 | 0.89 |
+| **Random Forest** | 0.8152 | 0.85 |
+| **XGBoost** | 0.8152 | 0.86 |
 
 ## 🔗 Tester l'application directement
 
