@@ -21,18 +21,27 @@ heart_disease_prediction_project/
 
 │ │ └── heart.csv
 
-│ └── processed/                    # Données après prétraitement
-│    ├── X_train_final.csv          # Train : imputé , encodé et standardisé
-│    ├── X_test_final.csv           # Test : imputé , encodé et standardisé
-│    ├── y_train.csv                # Cible du train
-│    └── y_test.csv                 # Cible du test
+│ └── processed/  
 
-├── models/ # 🤖 Modèles entraînés
-│ ├── lr_final.pkl # Régression Logistique
-│ ├── svm_final.pkl # Support Vector Machine
-│ ├── best_rf.pkl # Random Forest (optimisé)
-│ ├── best_xgb.pkl # XGBoost (optimisé)
-│ └── scaler.pkl # StandardScaler pour la normalisation
+│    ├── X_train_final.csv     
+
+│    ├── X_test_final.csv 
+
+│    ├── y_train.csv              
+
+│    └── y_test.csv              
+
+├── models/ 
+
+│ ├── lr_final.pkl 
+
+│ ├── svm_final.pkl 
+
+│ ├── best_rf.pkl 
+
+│ ├── best_xgb.pkl
+
+│ └── scaler.pkl
 
 ├── notebooks/
 
