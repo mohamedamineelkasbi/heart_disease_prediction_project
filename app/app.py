@@ -4,374 +4,209 @@ import pandas as pd
 import numpy as np
 import os
 
-st.set_page_config(
-    page_title="Prédiction des Maladies Cardiaques",
-    page_icon="❤️",
-    layout="wide"
-)
-
+st.set_page_config(page_title="Prédiction Maladie Cardiaque", page_icon="❤️", layout="wide")
 st.title("❤️ Prédicteur de Maladie Cardiaque")
 
-
+# ============================================================
+# 1. CHARGEMENT DES ARTÉFACTS
+# ============================================================
 @st.cache_resource
 def charger_modeles():
-
     dossier_app = os.path.dirname(os.path.abspath(__file__))
-    racine_projet = os.path.dirname(dossier_app)
-
-    scaler_path = os.path.join(racine_projet, "models", "scaler.pkl")
-    imputer_path = os.path.join(racine_projet, "models", "imputer.pkl")
-    model_svm_path = os.path.join(racine_projet, "models", "best_svm.pkl")
-    model_rf_path = os.path.join(racine_projet, "models", "best_rf.pkl")
-    model_xgb_path = os.path.join(racine_projet, "models", "best_xgb.pkl")
-    model_lr_path = os.path.join(racine_projet, "models", "lr_final.pkl")
-
+    racine = os.path.dirname(dossier_app)
+    
     try:
-        scaler = joblib.load(scaler_path)
-        imputer = joblib.load(imputer_path)
-        model_svm = joblib.load(model_svm_path)
-        model_rf = joblib.load(model_rf_path)
-        model_xgb = joblib.load(model_xgb_path)
-        model_lr = joblib.load(model_lr_path)
-
+        scaler = joblib.load(os.path.join(racine, "models", "scaler.pkl"))
+        imputer = joblib.load(os.path.join(racine, "models", "imputer.pkl"))
+        
         modeles = {
-            "SVM": model_svm,
-            "Random Forest": model_rf,
-            "XGBoost": model_xgb,
-            "Régression Logistique": model_lr
+            "Régression Logistique": joblib.load(os.path.join(racine, "models", "lr_final.pkl")),
+            "Random Forest": joblib.load(os.path.join(racine, "models", "best_rf.pkl")),
+            "SVM": joblib.load(os.path.join(racine, "models", "best_svm.pkl")),
+            "XGBoost": joblib.load(os.path.join(racine, "models", "best_xgb.pkl"))
         }
+        
+        X_train_ref = pd.read_csv(os.path.join(racine, "data", "processed", "X_train.csv"))
+        reference_columns = X_train_ref.columns.tolist()
+        
+        return modeles, scaler, imputer, reference_columns
+    except Exception as e:
+        st.error(f"Erreur de chargement : {e}")
+        return None, None, None, None
 
-        return modeles, scaler, imputer
+modeles, scaler, imputer, reference_columns = charger_modeles()
 
-    except FileNotFoundError as e:
-        st.error(f"❌ Erreur de chargement des modèles : {e}")
-        return None, None, None
+if modeles is None:
+    st.stop()
 
+raw_num_cols = ['Age', 'RestingBP', 'Cholesterol', 'MaxHR', 'Oldpeak']
 
-modeles, scaler, imputer = charger_modeles()
+# ============================================================
+# FONCTION DE PRÉTRAITEMENT INFAILLIBLE (Utilisée pour Tab 1 et 2)
+# ============================================================
+def preprocess_infaillible(df_brut):
+    df = df_brut.copy()
+    
+    # 1. Remplacement des 0 par NaN
+    df['RestingBP'] = df['RestingBP'].replace(0, np.nan)
+    df['Cholesterol'] = df['Cholesterol'].replace(0, np.nan)
 
-numerical_cols = [
-    'Age',
-    'RestingBP',
-    'Cholesterol',
-    'MaxHR',
-    'Oldpeak'
-]
+    # 2. Standardisation
+    df[raw_num_cols] = scaler.transform(df[raw_num_cols])
 
-tab1, tab2, tab3 = st.tabs([
-    "Prédiction",
-    "Prédiction en masse",
-    "Informations sur les Modèles"
-])
+    # 3. Imputation KNN
+    df[raw_num_cols] = imputer.transform(df[raw_num_cols])
 
+    # 4. Création du DataFrame final avec les vrais noms de colonnes
+    df_process = pd.DataFrame(0, index=df.index, columns=reference_columns)
+    
+    # Remplissage des numériques
+    for col in raw_num_cols:
+        if col in reference_columns:
+            df_process[col] = df[col]
+            
+    df_process['FastingBS'] = df['FastingBS']
 
+    # Activation manuelle des catégories
+    if 'Sex' in df.columns:
+        df_process.loc[df['Sex'] == 'M', 'Sex_M'] = 1
+        
+    if 'ChestPainType' in df.columns:
+        df_process.loc[df['ChestPainType'] == 'ATA', 'ChestPainType_ATA'] = 1
+        df_process.loc[df['ChestPainType'] == 'NAP', 'ChestPainType_NAP'] = 1
+        df_process.loc[df['ChestPainType'] == 'TA', 'ChestPainType_TA'] = 1
+        
+    if 'RestingECG' in df.columns:
+        df_process.loc[df['RestingECG'] == 'Normal', 'RestingECG_Normal'] = 1
+        df_process.loc[df['RestingECG'] == 'ST', 'RestingECG_ST'] = 1
+        
+    if 'ExerciseAngina' in df.columns:
+        df_process.loc[df['ExerciseAngina'] == 'Y', 'ExerciseAngina_Y'] = 1
+        
+    if 'ST_Slope' in df.columns:
+        df_process.loc[df['ST_Slope'] == 'Flat', 'ST_Slope_Flat'] = 1
+        df_process.loc[df['ST_Slope'] == 'Up', 'ST_Slope_Up'] = 1
+
+    return df_process[reference_columns]
+
+# ============================================================
+# INTERFACE UTILISATEUR
+# ============================================================
+tab1, tab2, tab3 = st.tabs(["🔍 Prédiction", "📂 Prédiction en masse", "ℹ️ Modèles"])
+
+# ------------------------------------------------------------
+# ONGLET 1 : PRÉDICTION INDIVIDUELLE
+# ------------------------------------------------------------
 with tab1:
-
     st.sidebar.header("Paramètres du Patient")
-
-    Age = st.sidebar.slider("Âge", 1, 100, 50)
-    RestingBP = st.sidebar.slider(
-        "Pression artérielle au repos (mm Hg)",
-        80, 200, 120
-    )
-    Cholesterol = st.sidebar.slider(
-        "Cholestérol (mg/dl)",
-        0, 600, 200
-    )
-    MaxHR = st.sidebar.slider(
-        "Fréquence cardiaque maximale",
-        60, 220, 150
-    )
-    Oldpeak = st.sidebar.slider(
-        "Dépression ST",
-        -2.6, 7.0, 1.0
-    )
-
+    
+    Age = st.sidebar.slider("Âge", 28, 77, 50)
+    RestingBP = st.sidebar.slider("Pression artérielle (mm Hg)", 90, 200, 120)
+    Cholesterol = st.sidebar.slider("Cholestérol (mg/dl)", 0, 600, 200)
+    FastingBS = st.sidebar.selectbox("Glycémie > 120 ?", [0, 1], format_func=lambda x: "Oui" if x==1 else "Non")
+    MaxHR = st.sidebar.slider("Fréquence cardiaque max", 60, 202, 150)
+    Oldpeak = st.sidebar.slider("Dépression ST", -2.6, 6.2, 1.0, step=0.1)
+    
     st.sidebar.markdown("---")
+    Sex = st.sidebar.selectbox("Sexe", ["M", "F"], format_func=lambda x: "Homme" if x=="M" else "Femme")
+    ChestPainType = st.sidebar.selectbox("Douleur thoracique", ["ASY", "ATA", "NAP", "TA"])
+    RestingECG = st.sidebar.selectbox("ECG au repos", ["Normal", "ST", "LVH"])
+    ExerciseAngina = st.sidebar.selectbox("Angine d'effort", ["N", "Y"], format_func=lambda x: "Oui" if x=="Y" else "Non")
+    ST_Slope = st.sidebar.selectbox("Pente ST", ["Up", "Flat", "Down"], format_func=lambda x: {"Up":"Ascendante","Flat":"Plate","Down":"Descendante"}[x])
 
-    Sex = st.sidebar.selectbox(
-        "Sexe",
-        ["Homme", "Femme"]
-    )
+    if st.sidebar.button("🩺 Lancer la Prédiction"):
+        df_brut = pd.DataFrame([{
+            'Age': Age, 'RestingBP': RestingBP, 'Cholesterol': Cholesterol, 
+            'FastingBS': FastingBS, 'MaxHR': MaxHR, 'Oldpeak': Oldpeak,
+            'Sex': Sex, 'ChestPainType': ChestPainType, 'RestingECG': RestingECG,
+            'ExerciseAngina': ExerciseAngina, 'ST_Slope': ST_Slope
+        }])
 
-    FastingBS = st.sidebar.selectbox(
-        "Glycémie à jeun > 120 mg/dl ?",
-        ["Non", "Oui"]
-    )
-
-    ExerciseAngina = st.sidebar.selectbox(
-        "Angine induite par l'exercice ?",
-        ["Non", "Oui"]
-    )
-
-    ChestPainType = st.sidebar.selectbox(
-        "Type de douleur thoracique",
-        [
-            "Aucune / ASY",
-            "Typique (TA)",
-            "Atypique (ATA)",
-            "Non angineuse (NAP)"
-        ]
-    )
-
-    RestingECG = st.sidebar.selectbox(
-        "Résultats ECG au repos",
-        [
-            "Normal",
-            "Anomalie ST-T",
-            "Hypertrophie ventriculaire (LVH)"
-        ]
-    )
-
-    ST_Slope = st.sidebar.selectbox(
-        "Pente du segment ST à l'effort",
-        [
-            "Ascendante (Up)",
-            "Plate (Flat)",
-            "Descendante (Down)"
-        ]
-    )
-
-    if st.sidebar.button("Lancer la Prédiction"):
-
-        donnees_patient = pd.DataFrame({
-            'Age': [Age],
-            'RestingBP': [RestingBP],
-            'Cholesterol': [Cholesterol],
-            'FastingBS': [1 if FastingBS == "Oui" else 0],
-            'MaxHR': [MaxHR],
-            'Oldpeak': [Oldpeak],
-            'Sex': ['M' if Sex == "Homme" else 'F'],
-            'ChestPainType': [{
-                "Aucune / ASY": "ASY",
-                "Typique (TA)": "TA",
-                "Atypique (ATA)": "ATA",
-                "Non angineuse (NAP)": "NAP"
-            }[ChestPainType]],
-            'RestingECG': [{
-                "Normal": "Normal",
-                "Anomalie ST-T": "ST",
-                "Hypertrophie ventriculaire (LVH)": "LVH"
-            }[RestingECG]],
-            'ExerciseAngina': [
-                'Y' if ExerciseAngina == "Oui" else 'N'
-            ],
-            'ST_Slope': [{
-                "Ascendante (Up)": "Up",
-                "Plate (Flat)": "Flat",
-                "Descendante (Down)": "Down"
-            }[ST_Slope]]
-        })
-
-        donnees_patient['RestingBP'] = (
-            donnees_patient['RestingBP'].replace(0, np.nan)
-        )
-
-        donnees_patient['Cholesterol'] = (
-            donnees_patient['Cholesterol'].replace(0, np.nan)
-        )
-
-        donnees_patient[numerical_cols] = scaler.transform(
-            donnees_patient[numerical_cols]
-        )
-
-        donnees_patient[numerical_cols] = imputer.transform(
-            donnees_patient[numerical_cols]
-        )
-
-        cols_categorielles = [
-            'Sex',
-            'ChestPainType',
-            'RestingECG',
-            'ExerciseAngina',
-            'ST_Slope'
-        ]
-
-        donnees_patient = pd.get_dummies(
-            donnees_patient,
-            columns=cols_categorielles,
-            drop_first=True,
-            dtype=int
-        )
-
-        modele_reference = next(iter(modeles.values()))
-
-        donnees_patient = donnees_patient.reindex(
-            columns=modele_reference.feature_names_in_,
-            fill_value=0
-        )
-
+        df_prep = preprocess_infaillible(df_brut)
+        
         st.subheader("🔍 Résultats des prédictions")
+        cols = st.columns(4)
+        
+        for idx, (nom, modele) in enumerate(modeles.items()):
+            pred = modele.predict(df_prep)[0]
+            with cols[idx]:
+                if pred == 1:
+                    st.error(f"🚨 **{nom}** : Maladie détectée")
+                else:
+                    st.success(f"✅ **{nom}** : Pas de maladie")
 
-        for nom_modele, modele in modeles.items():
-
-            prediction = modele.predict(
-                donnees_patient
-            )[0]
-
-            if prediction == 1:
-                st.error(
-                    f"🚨 {nom_modele} : Maladie cardiaque détectée"
-                )
-            else:
-                st.success(
-                    f"✅ {nom_modele} : Pas de maladie cardiaque"
-                )
-
-    else:
-        st.info(
-            "📌 Remplissez vos informations médicales à gauche "
-            "et cliquez sur le bouton."
-        )
-
-
+# ------------------------------------------------------------
+# ONGLET 2 : PRÉDICTION EN MASSE
+# ------------------------------------------------------------
 with tab2:
-
-    st.header("Importer un fichier CSV brut")
-
-    st.write(
-        "Veuillez importer votre fichier contenant les données "
-        "des patients pour obtenir une prédiction automatique."
-    )
-
-    colonnes_requises = [
-        'Age',
-        'Sex',
-        'ChestPainType',
-        'RestingBP',
-        'Cholesterol',
-        'FastingBS',
-        'RestingECG',
-        'MaxHR',
-        'ExerciseAngina',
-        'Oldpeak',
-        'ST_Slope'
-    ]
-
-    fichier_csv = st.file_uploader(
-        "Glissez-déposez votre fichier ici",
-        type=["csv"]
-    )
-
-    st.caption("""
-    📝 **Note :** Le fichier doit contenir exactement ces 11 colonnes
-    (ordre non imposé) :
-    `Age, Sex, ChestPainType, RestingBP, Cholesterol, FastingBS,
-    RestingECG, MaxHR, ExerciseAngina, Oldpeak, ST_Slope`.
-    Les valeurs manquantes sont prises en charge automatiquement
-    par l'imputation KNN.
+    st.header("📂 Importer un fichier CSV")
+    st.markdown("""
+    Le fichier doit contenir **exactement** les 11 colonnes suivantes (ordre non imposé) avec les valeurs brutes d'origine : 
+    `Age`, `Sex` (M/F), `ChestPainType` (ASY/ATA/NAP/TA), `RestingBP`, `Cholesterol`, `FastingBS` (0/1), 
+    `RestingECG` (Normal/ST/LVH), `MaxHR`, `ExerciseAngina` (N/Y), `Oldpeak`, `ST_Slope` (Up/Flat/Down)
     """)
+    
+    colonnes_requises = ['Age','Sex','ChestPainType','RestingBP','Cholesterol','FastingBS',
+                         'RestingECG','MaxHR','ExerciseAngina','Oldpeak','ST_Slope']
 
+    fichier_csv = st.file_uploader("Glissez-déposez votre fichier ici", type=["csv"])
+    
     if fichier_csv is not None:
-
-        df_brut = pd.read_csv(fichier_csv)
-
-        modele_choisi = st.selectbox(
-            "Choisir le modèle",
-            list(modeles.keys())
-        )
-
+        df_brut_csv = pd.read_csv(fichier_csv)
+        modele_choisi = st.selectbox("Choisir le modèle pour la prédiction", list(modeles.keys()))
+        
         if st.button("🔍 Lancer la prédiction en masse"):
-
-            if set(df_brut.columns) != set(colonnes_requises):
-                st.error(
-                    "❌ Erreur : les colonnes du fichier "
-                    "ne correspondent pas aux attentes."
-                )
+            # Vérification des colonnes
+            if set(df_brut_csv.columns) != set(colonnes_requises):
+                st.error("❌ Erreur : Les noms de colonnes du fichier ne correspondent pas exactement aux attentes.")
                 st.stop()
-
-            df_brut['RestingBP'] = (
-                df_brut['RestingBP'].replace(0, np.nan)
-            )
-
-            df_brut['Cholesterol'] = (
-                df_brut['Cholesterol'].replace(0, np.nan)
-            )
-
-            with st.spinner("Prétraitement des données..."):
-
-                df_encode = df_brut.copy()
-
-                df_encode[numerical_cols] = scaler.transform(
-                    df_encode[numerical_cols]
-                )
-
-                df_encode[numerical_cols] = imputer.transform(
-                    df_encode[numerical_cols]
-                )
-
-                cols_categorielles = [
-                    'Sex',
-                    'ChestPainType',
-                    'RestingECG',
-                    'ExerciseAngina',
-                    'ST_Slope'
-                ]
-
-                df_encode = pd.get_dummies(
-                    df_encode,
-                    columns=cols_categorielles,
-                    drop_first=True,
-                    dtype=int
-                )
-
+                
+            # Vérification des valeurs nulles
+            if df_brut_csv.isnull().values.any():
+                st.error("❌ Erreur : Le fichier contient des valeurs vides (NaN). Veuillez nettoyer le fichier.")
+                st.stop()
+            
+            # Prétraitement infaillible appliqué à tout le fichier
+            df_prep_csv = preprocess_infaillible(df_brut_csv)
+            
+            # Prédiction
             modele = modeles[modele_choisi]
-
-            df_encode = df_encode.reindex(
-                columns=modele.feature_names_in_,
-                fill_value=0
-            )
-
-            predictions = modele.predict(df_encode)
-
-            df_resultats = df_brut.copy()
-
-            df_resultats[ 'Prédiction (0=Sain, 1=Malade)'] = predictions
-
-            st.success(
-                "✅ Fichier validé ! Prédiction terminée."
-            )
-
-            st.subheader("Résultats :")
-
+            predictions = modele.predict(df_prep_csv)
+            
+            # Fusion des résultats
+            df_resultats = df_brut_csv.copy()
+            df_resultats['Prédiction (0=Sain, 1=Malade)'] = predictions
+            
+            st.success("✅ Prédictions terminées avec succès !")
             st.dataframe(df_resultats)
-
-            csv = df_resultats.to_csv(
-                index=False
-            ).encode('utf-8')
-
+            
+            # Bouton de téléchargement
+            csv_resultat = df_resultats.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Télécharger les prédictions (CSV)",
-                data=csv,
-                file_name='predictions.csv',
+                label="📥 Télécharger les résultats (CSV)",
+                data=csv_resultat,
+                file_name='predictions_cardiaques.csv',
                 mime='text/csv'
             )
 
-
+# ------------------------------------------------------------
+# ONGLET 3 : INFORMATIONS MODÈLES
+# ------------------------------------------------------------
 with tab3:
-
-    st.header("Informations sur les Modèles")
-
-    st.subheader("Comparaison des performances (Recall)")
-
+    st.header("ℹ️ Informations sur les Modèles")
+    st.write("Ce tableau récapitule les performances des modèles évalués lors de la phase de test, optimisés spécifiquement sur le **Recall** pour minimiser les faux négatifs en milieu médical.")
+    
     donnees_graphique = pd.DataFrame({
-        'Modèle': [
-            'Régression Logistique',
-            'Forêt Aléatoire',
-            'SVM',
-            'XGBoost'
-        ],
-        'Recall': [
-            0.87,
-            0.85,
-            0.89,
-            0.86
-        ]
+        'Modèle': ['Régression Logistique', 'Random Forest', 'SVM', 'XGBoost'],
+        'Recall (Sensibilité)': [0.87, 0.85, 0.89, 0.86]
     })
-
-    st.bar_chart(
-        donnees_graphique,
-        x='Modèle',
-        y='Recall',
-        height=400
-    )
+    
+    st.bar_chart(donnees_graphique, x='Modèle', y='Recall (Sensibilité)', height=400)
+    
+    st.markdown("---")
+    st.subheader("Pourquoi le Recall ?")
+    st.info("""
+    En cardiologie, un **Faux Négatif** (dire à un patient malade qu'il est sain) est beaucoup plus dangereux 
+    qu'un **Faux Positif** (dire à un patient sain qu'il est malade, ce qui nécessite juste un examen complémentaire). 
+    Nous avons donc configuré les algorithmes pour maximiser leur capacité à détecter les vrais malades.
+    """)
