@@ -109,8 +109,8 @@ with tab1:
     
     st.sidebar.markdown("---")
     Sex = st.sidebar.selectbox("Sexe", ["M", "F"], format_func=lambda x: "Homme" if x=="M" else "Femme")
-    ChestPainType = st.sidebar.selectbox("Douleur thoracique", ["ASY", "ATA", "NAP", "TA"])
-    RestingECG = st.sidebar.selectbox("ECG au repos", ["Normal", "ST", "LVH"])
+    ChestPainType = st.sidebar.selectbox("Douleur thoracique", ["ASY (Asymptomatique) ", "ATA (Angine atypique) ", "NAP  (Douleur non angineuse) ", "TA (Angine typique) "])
+    RestingECG = st.sidebar.selectbox("ECG au repos", ["Normal", "ST  (Anomalie de l'onde ST-T) ", "LVH (Hypertrophie Ventriculaire Gauche) "])
     ExerciseAngina = st.sidebar.selectbox("Angine d'effort", ["N", "Y"], format_func=lambda x: "Oui" if x=="Y" else "Non")
     ST_Slope = st.sidebar.selectbox("Pente ST", ["Up", "Flat", "Down"], format_func=lambda x: {"Up":"Ascendante","Flat":"Plate","Down":"Descendante"}[x])
 
