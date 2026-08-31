@@ -164,7 +164,7 @@ with tab2:
 
     st.markdown("---")
     st.markdown("""
- **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes suivantes ** (ordre non imposé) :
+ **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes suivantes** (ordre non imposé) :
  `Age`, `Sex`, `ChestPainType`, `RestingBP`, `Cholesterol`, `FastingBS`, `RestingECG`, `MaxHR`, `ExerciseAngina`, `Oldpeak`, `ST_Slope`.
  il ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
     """)
