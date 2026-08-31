@@ -140,11 +140,6 @@ with tab1:
 # ------------------------------------------------------------
 with tab2:
     st.header("📂 Importer un fichier CSV")
-    st.markdown("""
-    Le fichier doit contenir **exactement** les 11 colonnes suivantes (ordre non imposé) avec les valeurs brutes d'origine : 
-    `Age`, `Sex` (M/F), `ChestPainType` (ASY/ATA/NAP/TA), `RestingBP`, `Cholesterol`, `FastingBS` (0/1), 
-    `RestingECG` (Normal/ST/LVH), `MaxHR`, `ExerciseAngina` (N/Y), `Oldpeak`, `ST_Slope` (Up/Flat/Down)
-    """)
     
     colonnes_requises = ['Age','Sex','ChestPainType','RestingBP','Cholesterol','FastingBS',
                          'RestingECG','MaxHR','ExerciseAngina','Oldpeak','ST_Slope']
@@ -188,6 +183,11 @@ with tab2:
                 file_name='predictions_cardiaques.csv',
                 mime='text/csv'
             )
+
+            st.markdown("---")
+            st.markdown("""
+ **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes requises** (ordre non imposé), ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
+    """)
 
 # ------------------------------------------------------------
 # ONGLET 3 : INFORMATIONS MODÈLES
