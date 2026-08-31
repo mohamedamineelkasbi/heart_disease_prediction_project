@@ -184,8 +184,8 @@ with tab2:
                 mime='text/csv'
             )
 
-            st.markdown("---")
-            st.markdown("""
+    st.markdown("---")
+    st.markdown("""
  **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes requises** (ordre non imposé), ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
     """)
 
