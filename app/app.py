@@ -7,9 +7,6 @@ import os
 st.set_page_config(page_title="Prédiction Maladie Cardiaque", page_icon="❤️", layout="wide")
 st.title("❤️ Prédicteur de Maladie Cardiaque")
 
-# ============================================================
-# 1. CHARGEMENT DES ARTÉFACTS
-# ============================================================
 @st.cache_resource
 def charger_modeles():
     dossier_app = os.path.dirname(os.path.abspath(__file__))
@@ -41,33 +38,24 @@ if modeles is None:
 
 raw_num_cols = ['Age', 'RestingBP', 'Cholesterol', 'MaxHR', 'Oldpeak']
 
-# ============================================================
-# FONCTION DE PRÉTRAITEMENT INFAILLIBLE (Utilisée pour Tab 1 et 2)
-# ============================================================
 def preprocess_infaillible(df_brut):
     df = df_brut.copy()
-    
-    # 1. Remplacement des 0 par NaN
+
     df['RestingBP'] = df['RestingBP'].replace(0, np.nan)
     df['Cholesterol'] = df['Cholesterol'].replace(0, np.nan)
 
-    # 2. Standardisation
     df[raw_num_cols] = scaler.transform(df[raw_num_cols])
 
-    # 3. Imputation KNN
     df[raw_num_cols] = imputer.transform(df[raw_num_cols])
-
-    # 4. Création du DataFrame final avec les vrais noms de colonnes
-    df_process = pd.DataFrame(0, index=df.index, columns=reference_columns)
     
-    # Remplissage des numériques
+    df_process = pd.DataFrame(0, index=df.index, columns=reference_columns)
+
     for col in raw_num_cols:
         if col in reference_columns:
             df_process[col] = df[col]
             
     df_process['FastingBS'] = df['FastingBS']
 
-    # Activation manuelle des catégories
     if 'Sex' in df.columns:
         df_process.loc[df['Sex'] == 'M', 'Sex_M'] = 1
         
@@ -89,14 +77,8 @@ def preprocess_infaillible(df_brut):
 
     return df_process[reference_columns]
 
-# ============================================================
-# INTERFACE UTILISATEUR
-# ============================================================
 tab1, tab2, tab3 = st.tabs(["🔍 Prédiction", "📂 Prédiction en masse", "ℹ️ Modèles"])
 
-# ------------------------------------------------------------
-# ONGLET 1 : PRÉDICTION INDIVIDUELLE
-# ------------------------------------------------------------
 with tab1:
     st.sidebar.header("Paramètres du Patient")
     
@@ -135,9 +117,6 @@ with tab1:
                 else:
                     st.success(f"✅ **{nom}** : Pas de maladie")
 
-# ------------------------------------------------------------
-# ONGLET 2 : PRÉDICTION EN MASSE
-# ------------------------------------------------------------
 with tab2:
     st.header("📂 Importer un fichier CSV")
     
@@ -151,12 +130,11 @@ with tab2:
         modele_choisi = st.selectbox("Choisir le modèle pour la prédiction", list(modeles.keys()))
         
         if st.button("🔍 Lancer la prédiction en masse"):
-            # Vérification des colonnes
+   
             if set(df_brut_csv.columns) != set(colonnes_requises):
                 st.error("❌ Erreur : Les noms de colonnes du fichier ne correspondent pas exactement aux attentes.")
                 st.stop()
                 
-            # Vérification des valeurs nulles
             if df_brut_csv.isnull().values.any():
                 st.error("❌ Erreur : Le fichier contient des valeurs vides (NaN). Veuillez nettoyer le fichier.")
                 st.stop()
@@ -186,7 +164,9 @@ with tab2:
 
     st.markdown("---")
     st.markdown("""
- **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes requises** (ordre non imposé), ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
+ **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes suivantes ** (ordre non imposé) :
+ `Age`, `Sex`, `ChestPainType`, `RestingBP`, `Cholesterol`, `FastingBS`, `RestingECG`, `MaxHR`, `ExerciseAngina`, `Oldpeak`, `ST_Slope`.
+ il ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
     """)
 
 # ------------------------------------------------------------
