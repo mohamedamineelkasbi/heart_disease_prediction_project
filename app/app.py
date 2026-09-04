@@ -156,21 +156,17 @@ with tab2:
                 st.error("❌ Erreur : Le fichier contient des valeurs vides (NaN). Veuillez nettoyer le fichier.")
                 st.stop()
             
-            # Prétraitement infaillible appliqué à tout le fichier
             df_prep_csv = preprocess_infaillible(df_brut_csv)
             
-            # Prédiction
             modele = modeles[modele_choisi]
             predictions = modele.predict(df_prep_csv)
             
-            # Fusion des résultats
             df_resultats = df_brut_csv.copy()
             df_resultats['Prédiction (0=Sain, 1=Malade)'] = predictions
             
             st.success("✅ Prédictions terminées avec succès !")
             st.dataframe(df_resultats)
             
-            # Bouton de téléchargement
             csv_resultat = df_resultats.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="📥 Télécharger les résultats (CSV)",
@@ -186,9 +182,7 @@ with tab2:
  il ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
     """)
 
-# ------------------------------------------------------------
-# ONGLET 3 : INFORMATIONS MODÈLES
-# ------------------------------------------------------------
+
 with tab3:
     st.header("ℹ️ Informations sur les Modèles")
     st.write("Ce tableau récapitule les performances des modèles évalués lors de la phase de test, optimisés spécifiquement sur le **Recall** pour minimiser les faux négatifs en milieu médical.")
