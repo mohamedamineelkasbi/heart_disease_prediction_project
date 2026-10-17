@@ -179,7 +179,7 @@ with tab2:
     st.markdown("""
  **📌 NOTE** : Pour garantir des prédictions fiables, le fichier CSV doit contenir **exactement les 11 colonnes suivantes** (ordre non imposé) :
  `Age`, `Sex`, `ChestPainType`, `RestingBP`, `Cholesterol`, `FastingBS`, `RestingECG`, `MaxHR`, `ExerciseAngina`, `Oldpeak`, `ST_Slope`.
- il ne doit comporter **aucune valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
+ il ne doit pas comporter des ** valeur manquante (NaN)** et doit respecter les formats attendus pour chaque variable, toute valeur aberrante ou illogique peut dégrader les performances du modèle. Le système bloque toute entrée non conforme.
     """)
 
 
@@ -189,10 +189,10 @@ with tab3:
     
     donnees_graphique = pd.DataFrame({
         'Modèle': ['Régression Logistique', 'Random Forest', 'SVM', 'XGBoost'],
-        'Recall (Sensibilité)': [0.87, 0.85, 0.89, 0.86]
+        'Recall': [0.87, 0.85, 0.89, 0.86]
     })
     
-    st.bar_chart(donnees_graphique, x='Modèle', y='Recall (Sensibilité)', height=400)
+    st.bar_chart(donnees_graphique, x='Modèle', y='Recall', height=400)
     
     st.markdown("---")
     st.subheader("Pourquoi le Recall ?")
